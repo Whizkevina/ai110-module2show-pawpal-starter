@@ -4,13 +4,18 @@
 
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+- My initial UML design centers on four classes: `Owner`, `Pet`, `Task`, and `SchedulePlanner`.
+- `Owner` stores the person's name, preferences, and pets so the app knows who the schedule is for.
+- `Pet` stores each pet's profile and basic care details so the system can keep the plan tied to the right animal.
+- `Task` represents one care action such as a walk, feeding, or grooming task, including its duration, priority, and category.
+- `SchedulePlanner` takes the owner, pet, and task data and turns it into a daily plan by sorting and selecting tasks based on time and priority.
+- The three core user actions I want to support are adding pet information, adding or editing care tasks, and generating a daily plan that explains what should happen first.
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+- After reviewing the skeleton, I changed `Task` so it points to a `Pet` object instead of storing only a pet name string.
+- I also changed `SchedulePlanner` to work from the `Owner` context alone, which lets it plan across all of the owner’s pets and use the owner’s time budget directly.
+- Those changes reduce duplicated state and make the scheduling logic less likely to drift from the actual pet data.
 
 ---
 
