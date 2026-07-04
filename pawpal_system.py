@@ -172,6 +172,18 @@ class Scheduler:
             ),
         )
 
+    def sort_by_priority(self) -> List[Task]:
+        """Sort tasks by priority first, then preferred time and duration."""
+        return sorted(
+            self.collect_tasks(),
+            key=lambda task: (
+                PRIORITY_RANKS.get(task.priority.lower(), 3),
+                _parse_time_label(task.preferred_time),
+                task.duration_minutes,
+                task.description.lower(),
+            ),
+        )
+
     def filter_tasks(self, pet_name: str | None = None, completed: bool | None = None) -> List[Task]:
         """Filter tasks by pet name or completion state."""
         return self.owner.get_tasks(pet_name=pet_name, completed=completed)
@@ -197,7 +209,7 @@ class Scheduler:
 
     def sort_tasks(self) -> List[Task]:
         """Order tasks by priority, time, and duration."""
-        return sorted(self.collect_tasks(), key=self._sort_key)
+        return self.sort_by_priority()
 
     def expand_recurring_tasks(self) -> List[Task]:
         """Create the next occurrence for any completed recurring task."""
@@ -227,7 +239,7 @@ class Scheduler:
         remaining_minutes = self.owner.daily_time_budget_minutes
         plan: List[Task] = []
 
-        for task in self.sort_by_time():
+        for task in self.sort_by_priority():
             if task.completed:
                 task.skipped_reason = "already completed"
                 continue

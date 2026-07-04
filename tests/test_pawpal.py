@@ -36,6 +36,26 @@ def test_sort_by_time_returns_chronological_order() -> None:
     assert [task.preferred_time for task in scheduler.sort_by_time()] == ["08:00", "12:00", "18:00"]
 
 
+def test_sort_by_priority_returns_priority_order() -> None:
+    """Tasks should be sorted by priority before time."""
+    owner = Owner(name="Jordan")
+    pet = Pet(name="Mochi", species="dog")
+    owner.add_pet(pet)
+
+    pet.add_task(Task(description="Low priority late task", duration_minutes=10, priority="low", preferred_time="08:00"))
+    pet.add_task(Task(description="High priority later task", duration_minutes=15, priority="high", preferred_time="18:00"))
+    pet.add_task(Task(description="Medium priority middle task", duration_minutes=20, priority="medium", preferred_time="12:00"))
+
+    scheduler = Scheduler(owner)
+
+    assert [task.priority for task in scheduler.sort_by_priority()] == ["high", "medium", "low"]
+    assert [task.description for task in scheduler.sort_tasks()] == [
+        "High priority later task",
+        "Medium priority middle task",
+        "Low priority late task",
+    ]
+
+
 def test_filter_tasks_by_pet_name_and_completion_status() -> None:
     """Filtering should isolate one pet and one completion state."""
     owner = Owner(name="Jordan")

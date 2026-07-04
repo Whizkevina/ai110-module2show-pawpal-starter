@@ -138,15 +138,15 @@ if conflicts:
 else:
     st.success("No exact-time conflicts detected for the current tasks.")
 
-sorted_tasks = scheduler.sort_by_time()
+sorted_tasks = scheduler.sort_by_priority()
 if sorted_tasks:
     st.table(
         [
             {
+                "priority": task.priority,
                 "time": task.preferred_time or "Anytime",
                 "description": task.description,
                 "pet": task.pet.name if task.pet else "",
-                "priority": task.priority,
                 "duration_minutes": task.duration_minutes,
                 "completed": task.completed,
             }

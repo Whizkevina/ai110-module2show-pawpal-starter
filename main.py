@@ -4,7 +4,7 @@ from pawpal_system import Owner, Pet, Scheduler, Task
 def format_schedule(scheduler: Scheduler) -> str:
     """Format today's schedule for terminal output."""
     plan = scheduler.build_plan()
-    lines = [f"Today's Schedule for {scheduler.owner.name}:"]
+    lines = [f"Today's Priority Schedule for {scheduler.owner.name}:"]
 
     if not plan:
         lines.append("No tasks fit into today's plan.")
@@ -57,7 +57,7 @@ def main() -> None:
 
     next_occurrence = scheduler.mark_task_complete(recurring)
 
-    print(print_task_list("All tasks sorted by time:", scheduler.sort_by_time()))
+    print(print_task_list("All tasks sorted by priority:", scheduler.sort_by_priority()))
     print()
     print(print_task_list("Tasks for Mochi:", scheduler.filter_tasks(pet_name="Mochi")))
     print()

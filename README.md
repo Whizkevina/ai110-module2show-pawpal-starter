@@ -47,19 +47,20 @@ pip install -r requirements.txt
 Paste a sample of your app's CLI or Streamlit output here so a reader can see what a generated plan looks like:
 
 ```
-Today's Schedule for Jordan:
+Today's Priority Schedule for Jordan:
 1. 08:00 - Morning walk for Mochi (30 min, priority: high)
 2. 09:00 - Vet meds for Mochi (5 min, priority: high)
 3. 09:00 - Feeding for Mochi (15 min, priority: high)
 4. 09:30 - Litter box clean for Pepper (10 min, priority: medium)
-5. 17:00 - Playtime for Pepper (20 min, priority: low)
-6. 18:00 - Refill water bowls for Pepper (5 min, priority: medium)
+5. 18:00 - Refill water bowls for Pepper (5 min, priority: medium)
+6. 17:00 - Playtime for Pepper (20 min, priority: low)
 ```
 
 ## Features
 
 - Add and track multiple pets with persistent session state in Streamlit.
 - Add care tasks with time, duration, priority, and recurrence details.
+- Schedule tasks by priority first, then by time with `Scheduler.sort_by_priority()`.
 - Sort tasks chronologically with `Scheduler.sort_by_time()`.
 - Filter tasks by pet name or completion status with `Scheduler.filter_tasks()`.
 - Detect exact-time conflicts with `Scheduler.detect_conflicts()`.
@@ -83,11 +84,11 @@ Successful test output:
 platform win32 -- Python 3.13.7, pytest-9.1.0, pluggy-1.6.0
 rootdir: C:\Users\timmy\OneDrive\Documents\JS Essential\ai110-module2show-pawpal-starter
 plugins: anyio-4.11.0
-collected 7 items
+collected 8 items
 
-tests\test_pawpal.py .......                                             [100%]
+tests\test_pawpal.py ........                                            [100%]
 
-============================== 7 passed in 0.10s ==============================
+============================== 8 passed in 0.38s ==============================
 ```
 
 Confidence Level: ★★★★☆
@@ -96,7 +97,8 @@ Confidence Level: ★★★★☆
 
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | `Scheduler.sort_by_time()` | Sorts by exact time, then priority and duration. |
+| Priority scheduling | `Scheduler.sort_by_priority()` | Sorts by priority first, then exact time and duration. |
+| Task sorting | `Scheduler.sort_by_time()` | Keeps a chronological sort helper for time-first views. |
 | Filtering | `Scheduler.filter_tasks()` and `Owner.get_tasks()` | Filters by pet name or completion status. |
 | Conflict handling | `Scheduler.detect_conflicts()` | Warns when two tasks share the same preferred time. |
 | Recurring tasks | `Task.clone_for_next_occurrence()` and `Scheduler.expand_recurring_tasks()` | Creates the next daily or weekly occurrence after completion. |
@@ -115,6 +117,7 @@ Add a pet -> add a task -> review sorting -> inspect conflict warnings -> genera
 
 Key scheduler behaviors shown in the demo:
 
+- Priority-based ordering using `Scheduler.sort_by_priority()`.
 - Sorting by time using `Scheduler.sort_by_time()`.
 - Conflict warnings using `Scheduler.detect_conflicts()`.
 - Recurring completion behavior using `Scheduler.mark_task_complete()`.
@@ -123,13 +126,13 @@ Key scheduler behaviors shown in the demo:
 CLI output from `main.py`:
 
 ```
-All tasks sorted by time:
+All tasks sorted by priority:
 - 08:00 — Morning walk for Mochi (30 min, priority: high) [Mochi]
 - 09:00 — Vet meds for Mochi (5 min, priority: high) [Mochi]
 - 09:00 — Feeding for Mochi (15 min, priority: high) [Mochi]
 - 09:30 — Litter box clean for Pepper (10 min, priority: medium) [Pepper]
-- 17:00 — Playtime for Pepper (20 min, priority: low) [Pepper]
 - 18:00 — Refill water bowls for Pepper (5 min, priority: medium) [Pepper]
+- 17:00 — Playtime for Pepper (20 min, priority: low) [Pepper]
 - 18:00 — Refill water bowls for Pepper (5 min, priority: medium) [Pepper]
 
 Conflict warnings:

@@ -57,13 +57,13 @@
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+- I tested task completion, adding a task to a pet, recurring task creation, chronological sorting, filtering by pet and completion status, conflict detection, and the empty-owner edge case.
+- These tests were important because they cover both the basic data model and the scheduler behavior that users actually rely on when planning pet care.
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+- I am fairly confident in the current scheduler, around 4 out of 5 stars, because the main behaviors are covered by automated tests and the CLI demo output matches the expected plan.
+- If I had more time, I would test overlapping time windows, multiple recurring tasks completing on the same day, and mixed priority ties to see how the scheduler behaves when the inputs are less clean.
 
 ---
 
@@ -71,12 +71,13 @@
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+- I am most satisfied with the way the scheduler stayed simple while still becoming useful: it sorts tasks, detects conflicts, handles recurrence, and still remains easy to read.
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+- In another iteration, I would add richer time handling, a clearer calendar-style UI, and a stronger recurrence model with explicit due dates instead of relying mostly on preferred time and completion flow.
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+- I learned that the best way to work with AI is to treat it like a fast assistant, not the architect.
+- When I kept the design boundaries clear and used separate chat sessions for each phase, it became much easier to make good decisions, verify them with tests, and keep the final system coherent.
