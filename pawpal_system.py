@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from datetime import timedelta
 from dataclasses import dataclass, field
 from typing import List
 
@@ -16,6 +17,10 @@ def _parse_time_label(time_label: str) -> tuple[int, int]:
     return (int(hours), int(minutes))
 
 
+def _format_date(value: datetime) -> str:
+    return value.strftime("%Y-%m-%d")
+
+
 @dataclass
 class Task:
     description: str
@@ -23,6 +28,7 @@ class Task:
     frequency: str = "daily"
     priority: str = "medium"
     preferred_time: str = ""
+    due_date: str = ""
     pet: Pet | None = None
     completed: bool = False
     completion_timestamp: str = ""
@@ -33,6 +39,24 @@ class Task:
         self.completed = True
         self.skipped_reason = ""
         self.completion_timestamp = datetime.now().isoformat(timespec="seconds")
+
+    def clone_for_next_occurrence(self) -> Task:
+        """Create the next recurring task occurrence."""
+        next_due = datetime.now()
+        if self.frequency == "weekly":
+            next_due += timedelta(days=7)
+        else:
+            next_due += timedelta(days=1)
+
+        return Task(
+            description=self.description,
+            duration_minutes=self.duration_minutes,
+            frequency=self.frequency,
+            priority=self.priority,
+            preferred_time=self.preferred_time,
+            due_date=_format_date(next_due),
+            pet=self.pet,
+        )
 
     def priority_score(self, owner: Owner | None = None) -> int:
         """Return a higher score for higher-priority tasks."""
@@ -82,6 +106,12 @@ class Pet:
         """Return the number of tasks assigned to this pet."""
         return len(self.care_tasks)
 
+    def get_tasks(self, completed: bool | None = None) -> List[Task]:
+        """Return tasks for this pet, optionally filtered by completion."""
+        if completed is None:
+            return list(self.care_tasks)
+        return [task for task in self.care_tasks if task.completed is completed]
+
 
 @dataclass
 class Owner:
@@ -105,6 +135,15 @@ class Owner:
             tasks.extend(pet.care_tasks)
         return tasks
 
+    def get_tasks(self, pet_name: str | None = None, completed: bool | None = None) -> List[Task]:
+        """Return owner tasks filtered by pet name or completion state."""
+        tasks = self.get_all_tasks()
+        if pet_name:
+            tasks = [task for task in tasks if task.pet and task.pet.name == pet_name]
+        if completed is not None:
+            tasks = [task for task in tasks if task.completed is completed]
+        return tasks
+
     def summary(self) -> str:
         """Return a short summary of the owner profile."""
         pet_count = len(self.pets)
@@ -121,6 +160,33 @@ class Scheduler:
         """Pull all tasks from the owner's pets."""
         return self.owner.get_all_tasks()
 
+    def sort_by_time(self) -> List[Task]:
+        """Sort tasks by preferred time, then priority and duration."""
+        return sorted(
+            self.collect_tasks(),
+            key=lambda task: (
+                _parse_time_label(task.preferred_time),
+                PRIORITY_RANKS.get(task.priority.lower(), 3),
+                task.duration_minutes,
+                task.description.lower(),
+            ),
+        )
+
+    def filter_tasks(self, pet_name: str | None = None, completed: bool | None = None) -> List[Task]:
+        """Filter tasks by pet name or completion state."""
+        return self.owner.get_tasks(pet_name=pet_name, completed=completed)
+
+    def mark_task_complete(self, task: Task) -> Task | None:
+        """Complete a task and create its next recurring occurrence when needed."""
+        task.mark_complete()
+
+        if task.pet and task.frequency in {"daily", "weekly"}:
+            next_task = task.clone_for_next_occurrence()
+            task.pet.add_task(next_task)
+            return next_task
+
+        return None
+
     def _sort_key(self, task: Task) -> tuple[int, tuple[int, int], int, str]:
         return (
             PRIORITY_RANKS.get(task.priority.lower(), 3),
@@ -133,12 +199,35 @@ class Scheduler:
         """Order tasks by priority, time, and duration."""
         return sorted(self.collect_tasks(), key=self._sort_key)
 
+    def expand_recurring_tasks(self) -> List[Task]:
+        """Create the next occurrence for any completed recurring task."""
+        new_tasks: List[Task] = []
+        for task in self.collect_tasks():
+            if task.completed and task.frequency in {"daily", "weekly"}:
+                new_tasks.append(task.clone_for_next_occurrence())
+        return new_tasks
+
+    def detect_conflicts(self) -> List[str]:
+        """Return warnings for tasks that share the same exact time."""
+        conflicts: dict[str, list[Task]] = {}
+        for task in self.collect_tasks():
+            if not task.preferred_time:
+                continue
+            conflicts.setdefault(task.preferred_time, []).append(task)
+
+        warnings: List[str] = []
+        for time_label, tasks in conflicts.items():
+            if len(tasks) > 1:
+                pet_names = ", ".join(task.pet.name if task.pet else "Unknown pet" for task in tasks)
+                warnings.append(f"Conflict at {time_label}: {pet_names}")
+        return warnings
+
     def build_plan(self) -> List[Task]:
         """Select the tasks that fit inside the owner's daily time budget."""
         remaining_minutes = self.owner.daily_time_budget_minutes
         plan: List[Task] = []
 
-        for task in self.sort_tasks():
+        for task in self.sort_by_time():
             if task.completed:
                 task.skipped_reason = "already completed"
                 continue

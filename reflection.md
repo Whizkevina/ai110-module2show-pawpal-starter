@@ -28,8 +28,8 @@
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+- One tradeoff is that conflict detection only checks for exact matching start times, not overlapping durations.
+- That is reasonable for this scenario because the app is still a lightweight planner, and exact-time collisions are the clearest conflicts to catch without adding much complexity.
 
 ---
 

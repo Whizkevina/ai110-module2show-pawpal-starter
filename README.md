@@ -49,9 +49,11 @@ Paste a sample of your app's CLI or Streamlit output here so a reader can see wh
 ```
 Today's Schedule for Jordan:
 1. 08:00 - Morning walk for Mochi (30 min, priority: high)
-2. 09:00 - Feeding for Mochi (15 min, priority: high)
-3. 09:30 - Litter box clean for Pepper (10 min, priority: medium)
-4. 17:00 - Playtime for Pepper (20 min, priority: low)
+2. 09:00 - Vet meds for Mochi (5 min, priority: high)
+3. 09:00 - Feeding for Mochi (15 min, priority: high)
+4. 09:30 - Litter box clean for Pepper (10 min, priority: medium)
+5. 17:00 - Playtime for Pepper (20 min, priority: low)
+6. 18:00 - Refill water bowls for Pepper (5 min, priority: medium)
 ```
 
 ## 🧪 Testing PawPal+
@@ -72,14 +74,12 @@ Sample test output:
 
 ## 📐 Smarter Scheduling
 
-> Fill in once you've implemented scheduling logic.
-
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Task sorting | `Scheduler.sort_by_time()` | Sorts by exact time, then priority and duration. |
+| Filtering | `Scheduler.filter_tasks()` and `Owner.get_tasks()` | Filters by pet name or completion status. |
+| Conflict handling | `Scheduler.detect_conflicts()` | Warns when two tasks share the same preferred time. |
+| Recurring tasks | `Task.clone_for_next_occurrence()` and `Scheduler.expand_recurring_tasks()` | Creates the next daily or weekly occurrence after completion. |
 
 ## 📸 Demo Walkthrough
 
