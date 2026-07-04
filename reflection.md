@@ -23,8 +23,8 @@
 
 **a. Constraints and priorities**
 
-- What constraints does your scheduler consider (for example: time, priority, preferences)?
-- How did you decide which constraints mattered most?
+- My scheduler considers preferred task time, priority, duration, pet ownership, and completion status.
+- I treated exact time and priority as the most important because they are the clearest constraints for a pet owner trying to avoid missed care tasks.
 
 **b. Tradeoffs**
 
@@ -37,13 +37,19 @@
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+- The most effective AI features were rapid code review, UML review, and targeted test planning.
+- Prompts that worked best were narrow and concrete, such as asking how the scheduler should collect tasks from the owner or which edge cases mattered for a sorting and recurrence system.
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+- I rejected one early suggestion that would have made the scheduler plan across several disconnected time fields instead of keeping one readable preferred-time field.
+- I verified the final approach by checking the demo output, reviewing the scheduler logic directly, and running the automated tests.
+
+**c. Workflow and leadership**
+
+- Separate chat sessions helped me keep design, implementation, testing, and documentation decisions isolated.
+- That made it easier to compare ideas without mixing old assumptions into new phases.
+- I learned that being the lead architect means deciding what to keep simple, rejecting elegant-looking complexity when it does not help the user, and using AI as a fast reviewer rather than an automatic decision-maker.
 
 ---
 

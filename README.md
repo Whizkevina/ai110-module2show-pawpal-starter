@@ -56,6 +56,16 @@ Today's Schedule for Jordan:
 6. 18:00 - Refill water bowls for Pepper (5 min, priority: medium)
 ```
 
+## Features
+
+- Add and track multiple pets with persistent session state in Streamlit.
+- Add care tasks with time, duration, priority, and recurrence details.
+- Sort tasks chronologically with `Scheduler.sort_by_time()`.
+- Filter tasks by pet name or completion status with `Scheduler.filter_tasks()`.
+- Detect exact-time conflicts with `Scheduler.detect_conflicts()`.
+- Automatically create the next daily or weekly task occurrence with `Scheduler.mark_task_complete()`.
+- Show a readable plan for today's schedule with `Scheduler.explain_plan()`.
+
 ## 🧪 Testing PawPal+
 
 Run the automated checks with:
@@ -91,14 +101,46 @@ Confidence Level: ★★★★☆
 | Conflict handling | `Scheduler.detect_conflicts()` | Warns when two tasks share the same preferred time. |
 | Recurring tasks | `Task.clone_for_next_occurrence()` and `Scheduler.expand_recurring_tasks()` | Creates the next daily or weekly occurrence after completion. |
 
-## 📸 Demo Walkthrough
+## Demo Walkthrough
 
-Describe your app in numbered steps so a reader can follow along without watching a video:
+1. Open the Streamlit app and enter the owner name in the Owner and Pets section.
+2. Add one or more pets, then add care tasks to each pet with a preferred time, duration, and priority.
+3. Review the task table to see the current task list and confirm the data stayed in session memory.
+4. Check the Build Schedule section to see sorted tasks and any conflict warnings.
+5. Click Generate schedule to view the readable daily plan produced by the scheduler.
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+Example workflow:
 
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->
+Add a pet -> add a task -> review sorting -> inspect conflict warnings -> generate today's schedule.
+
+Key scheduler behaviors shown in the demo:
+
+- Sorting by time using `Scheduler.sort_by_time()`.
+- Conflict warnings using `Scheduler.detect_conflicts()`.
+- Recurring completion behavior using `Scheduler.mark_task_complete()`.
+- Task filtering with `Scheduler.filter_tasks()`.
+
+CLI output from `main.py`:
+
+```
+All tasks sorted by time:
+- 08:00 — Morning walk for Mochi (30 min, priority: high) [Mochi]
+- 09:00 — Vet meds for Mochi (5 min, priority: high) [Mochi]
+- 09:00 — Feeding for Mochi (15 min, priority: high) [Mochi]
+- 09:30 — Litter box clean for Pepper (10 min, priority: medium) [Pepper]
+- 17:00 — Playtime for Pepper (20 min, priority: low) [Pepper]
+- 18:00 — Refill water bowls for Pepper (5 min, priority: medium) [Pepper]
+- 18:00 — Refill water bowls for Pepper (5 min, priority: medium) [Pepper]
+
+Conflict warnings:
+- Conflict at 09:00: Mochi, Mochi
+- Conflict at 18:00: Pepper, Pepper
+
+Today's Schedule for Jordan:
+1. 08:00 - Morning walk for Mochi (30 min, priority: high)
+2. 09:00 - Vet meds for Mochi (5 min, priority: high)
+3. 09:00 - Feeding for Mochi (15 min, priority: high)
+4. 09:30 - Litter box clean for Pepper (10 min, priority: medium)
+5. 17:00 - Playtime for Pepper (20 min, priority: low)
+6. 18:00 - Refill water bowls for Pepper (5 min, priority: medium)
+```

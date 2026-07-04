@@ -75,6 +75,8 @@ if owner.pets:
 else:
     st.info("No pets yet. Add one below.")
 
+scheduler = Scheduler(owner)
+
 st.markdown("### Tasks")
 st.caption("Add care tasks directly to a pet so they persist in session state.")
 
@@ -127,9 +129,34 @@ else:
 st.divider()
 
 st.subheader("Build Schedule")
-st.caption("This button now calls the scheduler that reads tasks from the owner's pets.")
+st.caption("This section shows the scheduler output, sorted tasks, and any conflict warnings.")
+
+conflicts = scheduler.detect_conflicts()
+if conflicts:
+    for warning in conflicts:
+        st.warning(warning)
+else:
+    st.success("No exact-time conflicts detected for the current tasks.")
+
+sorted_tasks = scheduler.sort_by_time()
+if sorted_tasks:
+    st.table(
+        [
+            {
+                "time": task.preferred_time or "Anytime",
+                "description": task.description,
+                "pet": task.pet.name if task.pet else "",
+                "priority": task.priority,
+                "duration_minutes": task.duration_minutes,
+                "completed": task.completed,
+            }
+            for task in sorted_tasks
+        ]
+    )
+else:
+    st.info("Add a few tasks to see the sorted schedule here.")
 
 if st.button("Generate schedule"):
-    scheduler = Scheduler(owner)
     plan_text = scheduler.explain_plan()
+    st.success("Today's schedule generated successfully.")
     st.text(plan_text)
