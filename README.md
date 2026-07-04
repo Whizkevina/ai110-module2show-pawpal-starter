@@ -58,19 +58,29 @@ Today's Schedule for Jordan:
 
 ## 🧪 Testing PawPal+
 
+Run the automated checks with:
+
 ```bash
-# Run the full test suite:
 pytest
-
-# Run with coverage:
-pytest --cov
 ```
 
-Sample test output:
+These tests cover task completion, pet task assignment, recurring task creation, time sorting, filtering, conflict detection, and the empty-owner edge case.
+
+Successful test output:
 
 ```
-# Paste your pytest output here
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.1.0, pluggy-1.6.0
+rootdir: C:\Users\timmy\OneDrive\Documents\JS Essential\ai110-module2show-pawpal-starter
+plugins: anyio-4.11.0
+collected 7 items
+
+tests\test_pawpal.py .......                                             [100%]
+
+============================== 7 passed in 0.10s ==============================
 ```
+
+Confidence Level: ★★★★☆
 
 ## 📐 Smarter Scheduling
 
