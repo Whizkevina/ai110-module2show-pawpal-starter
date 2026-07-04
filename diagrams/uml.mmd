@@ -21,19 +21,21 @@ classDiagram
     }
 
     class Task {
-        +str title
+        +str description
         +int duration_minutes
+        +str frequency
         +str priority
-        +str category
+        +str preferred_time
         +Pet pet
         +bool completed
         +str completion_timestamp
         +str skipped_reason
+        +mark_complete() None
         +priority_score(owner: Owner) int
         +can_fit(available_minutes: int) bool
     }
 
-    class SchedulePlanner {
+    class Scheduler {
         +Owner owner
         +collect_tasks() list~Task~
         +sort_tasks() list~Task~
@@ -43,4 +45,4 @@ classDiagram
 
     Owner "1" o-- "*" Pet : owns
     Pet "1" o-- "*" Task : needs
-    SchedulePlanner --> Owner : plans_for
+    Scheduler --> Owner : plans_for
